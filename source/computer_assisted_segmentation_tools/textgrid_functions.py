@@ -43,7 +43,7 @@ from icecream import ic
 import numpy as np
 from textgrids import TextGrid, Interval, Tier
 
-from .configuration_classes import ExclusionList
+from .configuration import ExclusionList
 from .exclusion import apply_exclusion_list
 from .meta import (
     check_and_load_aaa_meta, check_and_load_csv_meta, check_and_load_rasl_meta
@@ -182,8 +182,8 @@ def add_tiers_to_textgrid(
         Pronunciation dictionary -- not needed if only generating to the word
         level, by default None
     """
-    begin_coeff = config_dict['word_guess']['begin']
-    end_coeff = config_dict['word_guess']['end']
+    begin_coefficient = config_dict['word_guess']['begin']
+    end_coefficient = config_dict['word_guess']['end']
 
     if pronunciation_dict:
         if params['prompt'] in pronunciation_dict:
@@ -199,7 +199,7 @@ def add_tiers_to_textgrid(
             (seg_begin, seg_end) = _calculate_seg_begin_end(
                 begin=params['begin'],
                 end=params['end'],
-                coefficients=(begin_coeff, end_coeff))
+                coefficients=(begin_coefficient, end_coefficient))
             boundaries = np.linspace(
                 seg_begin, seg_end, len(transcription) + 3)
             boundaries = boundaries[1:-1]
@@ -212,7 +212,7 @@ def add_tiers_to_textgrid(
         (seg_begin, seg_end) = _calculate_seg_begin_end(
             begin=params['begin'],
             end=params['end'],
-            coefficients=(begin_coeff, end_coeff))
+            coefficients=(begin_coefficient, end_coefficient))
         boundaries = [seg_begin, seg_end]
         params['segment boundaries'] = boundaries
 
