@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 #
 # Copyright (c) 2022-2024 Pertti Palo.
 #
@@ -29,50 +28,44 @@
 # articles listed in README.markdown. They can also be found in
 # citations.bib in BibTeX format.
 #
+"""Console script for computer_assisted_segmentation_tools."""
 
-# import time
+from pathlib import Path
 
 from .command_line import CastArgumentParser
 from .commands import CommandStrings, process_command
-from .configuration_parser import read_config_file
+from .configuration import CastConfig
 from .exclusion import load_exclusion_list
 
 
 def run_cli():
     """
     Main to run CAST
-
-    Parameters
-    ----------
-    args : list
-        Command line arguments.
     """
     cli = CastArgumentParser("CAST")
 
     command_string = cli.args.command
     if command_string in CommandStrings.values():
         command = CommandStrings(command_string)
-        config_filename = cli.args.configuration_filename
-        config_dict = read_config_file(config_filename)
-        if config_dict["exclusion_list"]:
-            exclusion_filename = config_dict["exclusion_list"]
+        path = cli.args.path
+        if cli.args.config_file:
+            config_file = Path(cli.args.config_file)
         else:
-            exclusion_filename = cli.args.exclusion_filename
-        exclusion_list = load_exclusion_list(exclusion_filename)
-        path = config_dict['data_directory']
+            config_file = path/"cast_config.yaml"
+        config = CastConfig(config_file.main_config)
+
+        if config.exclusion_list:
+            exclusion_file = config.exclusion_list
+        else:
+            exclusion_file = Path(cli.args.exclusion_filename)
+            config.exclusion_list = exclusion_file
+        exclusion_list = load_exclusion_list(exclusion_file)
 
         process_command(command=command,
                         path=path,
-                        config_dict=config_dict,
+                        config=config,
                         exclusion_list=exclusion_list)
     else:
         print("Did not find a command in the arguments: " +
               cli.args.command + ".")
         print(f"Accepted commands are: {', '.join(CommandStrings.values())}")
-
-
-# if __name__ == '__main__':
-#     start_time = time.perf_counter()
-#     main()
-#     elapsed_time = time.perf_counter() - start_time
-#     print(f'Elapsed time was {elapsed_time}.')
