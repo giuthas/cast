@@ -37,8 +37,8 @@ import sys
 
 from .clean_textgrids import remove_empty_intervals_from_textgrids
 from .concatenate import concatenate_wavs
-from .configuration_parser import read_pronunciation_dict
-from .configuration_classes import ExclusionList
+from .configuration import read_pronunciation_dict
+from .configuration import ExclusionList, MainConfig
 from .extract import extract_textgrids
 from .path_functions import initialise_dataset
 from .textgrid_functions import add_tiers
@@ -95,7 +95,7 @@ class TierLevels(ExtendedEnum):
 
 
 def process_command(
-        command: CommandStrings, path: Path, config_dict: dict,
+        command: CommandStrings, path: Path, config: MainConfig,
         exclusion_list: ExclusionList | None = None
 ) -> None:
     """
@@ -107,7 +107,7 @@ def process_command(
         The command to be run.
     path : Path
         What to run the command on.
-    config_dict : dict
+    config : dict
         Configuration to run the command with.
     exclusion_list : Optional[ExclusionList]
         Exclusion list to apply to the list of recordings to potentially
@@ -115,30 +115,24 @@ def process_command(
     """
 
     if command is CommandStrings.INITIALISE:
-        initialise_dataset(path, config_dict)
+        initialise_dataset(path, config)
     elif command is CommandStrings.ADD:
         pronunciation_dict = None
-        if not config_dict['flags']['only_words']:
-            pronunciation_dict = read_pronunciation_dict(
-                config_dict['pronunciation dictionary'])
-        add_tiers(path, config_dict, pronunciation_dict=pronunciation_dict,
+        add_tiers(path, config, pronunciation_dict=pronunciation_dict,
                   exclusion_list=exclusion_list)
     elif command is CommandStrings.CONCATENATE:
         pronunciation_dict = None
-        if not config_dict['flags']['only words']:
-            pronunciation_dict = read_pronunciation_dict(
-                config_dict['pronunciation dictionary'])
         concatenate_wavs(
-            path, config_dict, pronunciation_dict)
+            path, config, pronunciation_dict)
+    elif command is CommandStrings.EXTRACT:
+        extract_textgrids(Path(path), Path(config['outputfile']))
     elif command is CommandStrings.REMOVE_DOUBLE_WORD_BOUNDARIES:
-        if not config_dict['output_dirname']:
+        if not config['output_dirname']:
             print(
                 'Fatal: No output directory for new textgrids specified in '
                 'config file.')
         remove_empty_intervals_from_textgrids(
-            Path(path), Path(config_dict['output_dirname']))
-    elif command is CommandStrings.EXTRACT:
-        extract_textgrids(Path(path), Path(config_dict['outputfile']))
+            Path(path), Path(config['output_dirname']))
     else:
         print(f"Did not recognise the command {command}. Exiting.")
         sys.exit()
