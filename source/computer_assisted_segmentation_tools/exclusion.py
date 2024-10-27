@@ -45,7 +45,7 @@ from strictyaml import (
     YAMLError, load
 )
 
-from .configuration_classes import ExclusionList
+from .configuration import ExclusionList
 
 _logger = logging.getLogger('cast.configuration')
 

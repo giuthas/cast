@@ -42,7 +42,7 @@ from .meta.cast_meta import get_token_list
 
 from .audio_processing import detect_beep_and_speech, high_pass
 from .textgrid_functions import generate_textgrid
-from .configuration_parser import read_exclusion_list
+from .configuration import read_exclusion_list
 from .csv_output import write_results
 
 pp = pprint.PrettyPrinter(indent=4)

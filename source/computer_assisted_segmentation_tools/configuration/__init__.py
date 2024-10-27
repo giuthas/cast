@@ -36,4 +36,4 @@ from .configuration import CastConfig
 from .configuration_classes import (
     ConfigurationFlags, ExclusionList, MainConfig, TierParams, UtteranceGuess
 )
-from .configuration_parser import read_pronunciation_dict
+from .configuration_parser import read_exclusion_list, read_pronunciation_dict
