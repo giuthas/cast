@@ -39,9 +39,8 @@ from .concatenate import concatenate_wavs
 from .configuration import CastConfig
 from .csv_output import write_results
 from .extract import extract_textgrids
-from .meta.aaa_meta import check_and_load_aaa_meta
-from .meta.csv_meta import check_and_load_csv_meta
-from .meta.rasl_meta import check_and_load_rasl_meta
+from .meta import (
+    check_and_load_aaa_meta, check_and_load_csv_meta, check_and_load_rasl_meta)
 from .textgrid_functions import (
     add_tiers, add_tiers_to_textgrid, generate_textgrid
 )
