@@ -46,9 +46,6 @@ from strictyaml import (
     Bool, Float, Map, Optional, ScalarValidator, Str, YAML, YAMLError, load
 )
 
-from ..meta.cast_meta import Datasource
-from ..pydantic_extensions import UpdatableBaseModel
-
 
 class PathValidator(ScalarValidator):
     """
@@ -65,12 +62,7 @@ class PathValidator(ScalarValidator):
         return None
 
 
-_tier_schema = Map({
-    Optional("label", default=""): Str(),
-})
-
-
-def read_config_file(filepath: Path | str | None = None) -> YAML:
+def read_config_file(filepath: Path) -> YAML:
     """
     Read the config file from filepath.
 
@@ -85,25 +77,23 @@ def read_config_file(filepath: Path | str | None = None) -> YAML:
     if filepath.is_file():
         with closing(open(filepath, 'r', encoding="utf-8")) as yaml_file:
             schema = Map({
-                "data_source": Str(),
+                "datasource": Str(),
                 "speaker_id": Str(),
-                "data_directory": PathValidator(),
                 Optional("outputfile", default=None): PathValidator(),
-                Optional("output_dirname"): PathValidator(),
                 "flags": Map({
                     "detect_beep": Bool(),
                     "test": Bool(),
                 }),
                 "tiers": Map({
-                    Optional("file"): _tier_schema,
-                    Optional("utterance"): _tier_schema,
-                    Optional("word"): _tier_schema,
-                    Optional("phoneme"): _tier_schema,
-                    Optional("phone"): _tier_schema
+                    Optional("file"): Str(),
+                    Optional("utterance"): Str(),
+                    Optional("word"): Str(),
+                    Optional("phoneme"): Str(),
+                    Optional("phone"): Str(),
                 }),
                 Optional("exclusion_list", default=None): Str(),
                 Optional("pronunciation_dictionary", default=None): Str(),
-                Optional("word_guess"): Map({
+                Optional("utterance_guess"): Map({
                     "begin": Float(),
                     "end": Float()
                 })
@@ -118,18 +108,18 @@ def read_config_file(filepath: Path | str | None = None) -> YAML:
         print(f"Didn't find {filepath}. Exiting.")
         sys.exit()
 
-    # data = config_dict.data
-    # if "pronunciation_dictionary" in data and data["pronunciation_dictionary"]:
-    #     if "[data_directory]" in data["pronunciation_dictionary"]:
-    #         data["pronunciation_dictionary"].replace(
-    #             "[data_directory]", data["data_directory"] + "/")
-    # data["pronunciation_dictionary"] = Path(data["pronunciation_dictionary"])
-    #
-    # if "exclusion_list" in data and data["exclusion_list"]:
-    #     if "[data_directory]" in data["exclusion_list"]:
-    #         data["exclusion_list"].replace(
-    #             "[data_directory]", data["data_directory"] + "/")
-    # data["exclusion_list"] = Path(data["exclusion_list"])
+    data = config_dict.data
+    if "pronunciation_dictionary" in data and data["pronunciation_dictionary"]:
+        if "[data_directory]" in data["pronunciation_dictionary"]:
+            data["pronunciation_dictionary"].replace(
+                "[data_directory]", data["data_directory"] + "/")
+    data["pronunciation_dictionary"] = Path(data["pronunciation_dictionary"])
+
+    if "exclusion_list" in data and data["exclusion_list"]:
+        if "[data_directory]" in data["exclusion_list"]:
+            data["exclusion_list"].replace(
+                "[data_directory]", data["data_directory"] + "/")
+    data["exclusion_list"] = Path(data["exclusion_list"])
 
     return config_dict
 
@@ -152,7 +142,7 @@ def read_exclusion_list(filepath: Path) -> dict:
     return exclusion_dict
 
 
-def read_pronunciation_dict(filepath: Path | str) -> dict:
+def read_pronunciation_dict(filepath: Path | str) -> dict | None:
     """
     Read the pronunciation dictionary and return it as a dict.
 
@@ -163,7 +153,10 @@ def read_pronunciation_dict(filepath: Path | str) -> dict:
     Returns a dict where each entry is a list of phonemes.
     """
     if isinstance(filepath, str):
-        filepath = Path(filepath)
+        if filepath == "":
+            return None
+        else:
+            filepath = Path(filepath)
 
     pronunciation_dict = {}
     if filepath.is_file():

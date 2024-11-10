@@ -33,8 +33,8 @@
 import logging
 from pathlib import Path
 
-from .configuration_parser import read_config_file
-from .configuration_classes import MainConfig
+from .configuration_parser import read_config_file, read_pronunciation_dict
+from .configuration_classes import ExclusionList, MainConfig
 
 _logger = logging.getLogger('cast.configuration_setup')
 
@@ -54,7 +54,7 @@ class CastConfig:
 
     def __init__(
             self,
-            configuration_file: Path | str | None = None
+            configuration_file: Path
     ) -> None:
         """
         Init the main configuration object.
@@ -63,12 +63,18 @@ class CastConfig:
 
         Parameters
         -------
-        configuration_file : Union[Path, str, None]
+        configuration_file : Path
             Path to the main configuration file.
         """
-
         self._config_yaml = read_config_file(configuration_file)
-        self._config = MainConfig(**self._config_yaml.data)
+        config_dict = self._config_yaml.data
+        if 'exclusion_list' in config_dict:
+            config_dict['exclusion_list'] = ExclusionList(
+                config_dict['exclusion_list'])
+        if 'pronunciation_dictionary' in config_dict:
+            config_dict['pronunciation_dictionary'] = read_pronunciation_dict(
+                config_dict['pronunciation_dictionary'])
+        self._config = MainConfig(**config_dict)
 
     @property
     def main_config(self) -> MainConfig:

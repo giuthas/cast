@@ -32,40 +32,61 @@
 
 from pathlib import Path
 
-from .command_line import CastArgumentParser
-from .commands import CommandStrings, process_command
-from .configuration import CastConfig
-from .exclusion import load_exclusion_list
+import click
+
+from . import cast_click
+# from .command_line import CastArgumentParser
+# from .commands import CommandStrings, process_command
+# from .configuration import CastConfig
+# from .exclusion import load_exclusion_list
 
 
-def run_cli():
+@click.group()
+@click.version_option()
+@click.pass_context
+def run_cli(context: click.Context) -> None:
     """
-    Main to run CAST
+    CAST - Computer Assisted Segmentation Tools
+
+    Cast is mainly used to add new Tiers to TextGrids. See documentation for
+    details.
     """
-    cli = CastArgumentParser("CAST")
+    pass
 
-    command_string = cli.args.command
-    if command_string in CommandStrings.values():
-        command = CommandStrings(command_string)
-        path = cli.args.path
-        if cli.args.config_file:
-            config_file = Path(cli.args.config_file)
-        else:
-            config_file = path/"cast_config.yaml"
-        config = CastConfig(config_file.main_config)
+    # cli = CastArgumentParser("CAST")
+    #
+    # command_string = cli.args.command
+    # if command_string in CommandStrings.values():
+    #     command = CommandStrings(command_string)
+    #     path = cli.args.path
+    #     if cli.args.config_file:
+    #         config_file = Path(cli.args.config_file)
+    #     else:
+    #         config_file = path / "cast_config.yaml"
+    #     config = CastConfig(config_file.main_config)
+    #
+    #     if config.exclusion_list:
+    #         exclusion_file = config.exclusion_list
+    #     else:
+    #         exclusion_file = Path(cli.args.exclusion_filename)
+    #         config.exclusion_list = exclusion_file
+    #     exclusion_list = load_exclusion_list(exclusion_file)
+    #
+    #     process_command(command=command,
+    #                     path=path,
+    #                     config=config,
+    #                     exclusion_list=exclusion_list)
+    # else:
+    #     print("Did not find a command in the arguments: " +
+    #           cli.args.command + ".")
+    #     print(f"Accepted commands are: {', '.join(CommandStrings.values())}")
 
-        if config.exclusion_list:
-            exclusion_file = config.exclusion_list
-        else:
-            exclusion_file = Path(cli.args.exclusion_filename)
-            config.exclusion_list = exclusion_file
-        exclusion_list = load_exclusion_list(exclusion_file)
 
-        process_command(command=command,
-                        path=path,
-                        config=config,
-                        exclusion_list=exclusion_list)
-    else:
-        print("Did not find a command in the arguments: " +
-              cli.args.command + ".")
-        print(f"Accepted commands are: {', '.join(CommandStrings.values())}")
+# noinspection PyTypeChecker
+run_cli.add_command(cast_click.add)
+# noinspection PyTypeChecker
+run_cli.add_command(cast_click.concatenate)
+# noinspection PyTypeChecker
+run_cli.add_command(cast_click.extract)
+# noinspection PyTypeChecker
+run_cli.add_command(cast_click.remove_double_boundaries)

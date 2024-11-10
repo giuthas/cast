@@ -28,12 +28,62 @@
 # articles listed in README.markdown. They can also be found in
 # citations.bib in BibTeX format.
 #
+
 """
-Configuration for CAST.
+Command line argument parser.
 """
+from pathlib import Path
+
+import click
+from icecream import ic
 
 from .configuration import CastConfig
-from .configuration_classes import (
-    ConfigurationFlags, ExclusionList, MainConfig, UtteranceGuess
-)
-from .configuration_parser import read_exclusion_list, read_pronunciation_dict
+from .clean_textgrids import remove_empty_intervals_from_textgrids
+from .concatenate import concatenate_wavs
+from .extract import extract_textgrids
+from .textgrid_functions import add_tiers
+
+
+@click.command()
+@click.argument(
+    "directory",
+    type=click.Path(exists=True, dir_okay=True, file_okay=False),)
+@click.argument("config_file")
+def add(directory: str, config_file: str) -> None:
+    """
+    Add the next Tier
+
+    \b
+    DIRECTORY contains the TextGrids to process.
+    CONFIG_FILE is the configuration .yaml file.
+    """
+    configuration = CastConfig(Path(config_file))
+    pronunciation_dict = None
+    add_tiers(path=directory,
+              configuration=configuration.main_config,
+              pronunciation_dict=pronunciation_dict)
+
+
+@click.command()
+def concatenate():
+    pass
+    # pronunciation_dict = None
+    # concatenate_wavs(
+    #     path, config, pronunciation_dict)
+
+
+@click.command()
+def extract():
+    pass
+    # extract_textgrids(Path(path), Path(config['outputfile']))
+
+
+@click.command()
+def remove_double_boundaries():
+    pass
+    # if not config['output_dirname']:
+    #     print(
+    #         'Fatal: No output directory for new textgrids specified in '
+    #         'config file.')
+    # remove_empty_intervals_from_textgrids(
+    #     Path(path), Path(config['output_dirname']))

@@ -35,7 +35,6 @@ from pathlib import Path
 from typing import Optional, Tuple, Union
 
 import numpy as np
-# wav file handling
 import scipy.io.wavfile as sio_wavfile
 
 from .meta.cast_meta import get_token_list

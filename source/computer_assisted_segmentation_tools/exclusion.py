@@ -70,8 +70,8 @@ def apply_exclusion_list(
     for recording in recordings:
         filename = recording['filename']
         if filename in exclusion_list.files:
-            ic('excluding due to name', filename)
-            _logger.info('Excluding %s: File is in exclusion list.', filename)
+            _logger.info('Excluding %s: File is in exclusion list.',
+                         filename)
             recording['excluded'] = True
 
         # The first condition sees if the whole prompt is excluded,
@@ -79,15 +79,15 @@ def apply_exclusion_list(
         # match exclusion criteria (for example excluding 'foobar ...'
         # based on 'foobar').
         prompt = recording['prompt']
-        partials = [element
-                    for element in exclusion_list.parts_of_prompts
-                    if element in prompt]
-        if prompt in exclusion_list.prompts or partials:
-            ic('excluding due to prompt', filename)
-            _logger.info(
-                'Excluding %s. Prompt: %s matches exclusion list.',
-                filename, prompt)
-            recording['excluded'] = True
+        if exclusion_list.parts_of_prompts is not None:
+            partials = [element for element in exclusion_list.parts_of_prompts
+                        if element in prompt]
+            if prompt in exclusion_list.prompts or partials:
+                ic('excluding due to prompt', filename)
+                _logger.info(
+                    'Excluding %s. Prompt: %s matches exclusion list.',
+                    filename, prompt)
+                recording['excluded'] = True
 
 
 def load_exclusion_list(filepath: Union[Path, str]) -> ExclusionList | None:

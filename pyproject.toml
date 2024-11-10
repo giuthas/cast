@@ -39,6 +39,7 @@ strictyaml = ">=1.7.3,<2"
 scipy = ">=1.14.1,<2"
 matplotlib = ">=3.9.2,<4"
 numpy = ">=2.1.2,<3"
+click = ">=8.1.7,<9"
 
 [tool.pixi.pypi-dependencies]
 computer-assisted-segmentation-tools = { path = ".", editable = true }

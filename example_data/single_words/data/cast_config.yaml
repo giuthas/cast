@@ -30,7 +30,7 @@
 ##
 
 # This tells CAST which metadata importer to use.
-data_source: AAA
+datasource: AAA
 
 # Speaker id is used in the output csv file.
 speaker_id: P1
@@ -40,11 +40,10 @@ flags:
   test: True # Run on only the first 10 recordings.
 
 tiers:
-  - utterance:
-  - word:
-  - phoneme:
-  - phone:
-    - label: "phonetic detail"
+  utterance:
+  word:
+  phoneme:
+  phone: "phonetic detail"
 
 # Strict YAML file specifying recordings to be excluded based
 # on both prompts and file names.

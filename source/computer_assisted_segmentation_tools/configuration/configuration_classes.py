@@ -33,11 +33,10 @@ Classes for storing CAST configuration.
 """
 
 from dataclasses import dataclass
-from pathlib import Path
 
-from source.computer_assisted_segmentation_tools.meta.cast_meta import (
+from ..meta.cast_meta import (
     Datasource)
-from source.computer_assisted_segmentation_tools.pydantic_extensions import (
+from ..pydantic_extensions import (
     UpdatableBaseModel)
 
 
@@ -46,8 +45,14 @@ class ConfigurationFlags(UpdatableBaseModel):
     test: bool | None = None
 
 
-class TierParams(UpdatableBaseModel):
-    label: str | None = None
+@dataclass
+class ExclusionList:
+    """
+    List of files, prompts, and parts of prompts to be excluded from analysis.
+    """
+    files: list[str] | None = None
+    prompts: list[str] | None = None
+    parts_of_prompts: list[str] | None = None
 
 
 class UtteranceGuess(UpdatableBaseModel):
@@ -59,17 +64,7 @@ class MainConfig(UpdatableBaseModel):
     datasource: Datasource
     speaker_id: str
     flags: ConfigurationFlags
-    tiers: dict[str, TierParams]
-    exclusion_list: Path | None = None
-    pronunciation_dictionary: Path | None = None
+    tiers: dict[str, str]
+    exclusion_list: ExclusionList | None = None
+    pronunciation_dictionary: dict[str, str] | None = None
     utterance_guess: UtteranceGuess
-
-
-@dataclass
-class ExclusionList:
-    """
-    List of files, prompts, and parts of prompts to be excluded from analysis.
-    """
-    files: list[str] | None = None
-    prompts: list[str] | None = None
-    parts_of_prompts: list[str] | None = None

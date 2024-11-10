@@ -43,11 +43,12 @@ from icecream import ic
 import numpy as np
 from textgrids import TextGrid, Interval, Tier
 
-from .configuration import ExclusionList
+from .configuration import ExclusionList, MainConfig
 from .exclusion import apply_exclusion_list
 from .meta import (
     check_and_load_aaa_meta, check_and_load_csv_meta, check_and_load_rasl_meta
 )
+from .meta.cast_meta import Datasource
 from .wav_handling import add_begin_end_from_wav
 
 _logger = logging.getLogger('cast.textgrid_functions')
@@ -83,16 +84,16 @@ def create_autosave_directory(textgrid_path: Path, config_dict: dict) -> Path:
 
 
 def add_tiers(
-        path, config_dict: dict,
+        path: Path | str,
+        configuration: MainConfig,
         pronunciation_dict: dict | None = None,
         csv_meta_file: str | None = None,
-        exclusion_list: ExclusionList | None = None,
 ) -> None:
     # TODO: check which tiers the textgrid has and which are requested. supply
     # the missing ones
 
-    speaker_id = config_dict['speaker_id']
-    test = config_dict['flags']['test']
+    speaker_id = configuration.speaker_id
+    test = configuration.flags.test
 
     if isinstance(path, str):
         path = Path(path)
@@ -100,27 +101,29 @@ def add_tiers(
     if path.is_file():
         if path.suffix == ".TextGrid":
             textgrid = TextGrid(str(path))
-            add_tiers_to_textgrid(textgrid, config_dict, pronunciation_dict)
+            add_tiers_to_textgrid(textgrid, configuration, pronunciation_dict)
             textgrid.write(str(path))
         else:
             print(f"Unknown file type: {path.suffix}. Exiting.")
             sys.exit()
     elif path.is_dir():
-        data_source = config_dict['data_source']
+        datasource = configuration.datasource
         table = {}
-        if data_source == 'AAA':
-            table = check_and_load_aaa_meta(
-                speaker_id, path, test)
-        elif data_source == 'RASL':
-            table = check_and_load_rasl_meta(speaker_id, path, test)
-        elif data_source == 'csv':
-            table = check_and_load_csv_meta(
-                speaker_id, path, test, csv_meta_file)
-        else:
-            print(f"Unknown data source: {data_source}. Exiting.")
-            sys.exit()
 
-        apply_exclusion_list(table, exclusion_list)
+        match datasource:
+            case Datasource.AAA:
+                table = check_and_load_aaa_meta(
+                    speaker_id, path, test)
+            case Datasource.RASL:
+                table = check_and_load_rasl_meta(speaker_id, path, test)
+            case Datasource.CSV:
+                table = check_and_load_csv_meta(
+                    speaker_id, path, test, csv_meta_file)
+            case _:
+                print(f"Unknown data source: {datasource}. Exiting.")
+                sys.exit()
+
+        apply_exclusion_list(table, configuration.exclusion_list)
 
         for item in table:
             item['textgrid_path'] = path / (item['filename'] + ".TextGrid")
@@ -128,7 +131,7 @@ def add_tiers(
         existing_textgrids = [item['textgrid_path'].is_file() for item in table]
         if any(existing_textgrids):
             new_dir = create_autosave_directory(
-                table[0]['textgrid_path'], config_dict)
+                table[0]['textgrid_path'], configuration)
 
             print(f"copying to {new_dir}")
             for item in table:
@@ -148,7 +151,7 @@ def add_tiers(
                 textgrid = TextGrid()
 
             add_tiers_to_textgrid(
-                textgrid, item, config_dict, pronunciation_dict)
+                textgrid, item, configuration, pronunciation_dict)
             textgrid.write(item['textgrid_path'])
 
 
@@ -164,7 +167,9 @@ def _calculate_seg_begin_end(
 
 
 def add_tiers_to_textgrid(
-        textgrid: TextGrid, params: dict, config_dict: dict,
+        textgrid: TextGrid,
+        params: dict,
+        configuration: MainConfig,
         pronunciation_dict: dict = None
 ) -> None:
     """
@@ -182,8 +187,8 @@ def add_tiers_to_textgrid(
         Pronunciation dictionary -- not needed if only generating to the word
         level, by default None
     """
-    begin_coefficient = config_dict['word_guess']['begin']
-    end_coefficient = config_dict['word_guess']['end']
+    begin_coefficient = configuration.word_guess.begin
+    end_coefficient = configuration.word_guess.end
 
     if pronunciation_dict:
         if params['prompt'] in pronunciation_dict:
@@ -216,49 +221,49 @@ def add_tiers_to_textgrid(
         boundaries = [seg_begin, seg_end]
         params['segment boundaries'] = boundaries
 
-    if config_dict['tiers']['utterance']:
-        if config_dict['tier_names']['utterance'] in textgrid:
+    if configuration.tiers['utterance']:
+        if configuration.tier_names.utterance in textgrid:
             _logger.critical(
                 "Tier %s already exists. Skipping file %s.",
-                config_dict['tier_names']['utterance'],
+                configuration.tier_names.utterance,
                 textgrid.filename)
             return
         utterance = generate_utterance_dicts(params)
         textgrid.interval_tier_from_array(
-            config_dict['tier_names']['utterance'], utterance)
-    if config_dict['tiers']['word']:
-        if config_dict['tier_names']['word'] in textgrid:
+            configuration.tier_names.utterance, utterance)
+    if configuration.tiers['word']:
+        if configuration.tier_names.word in textgrid:
             _logger.critical(
                 "Tier %s already exists. Skipping file %s.",
-                config_dict['tier_names']['utterance'],
+                configuration.tier_names.utterance,
                 textgrid.filename)
             return
         words = generate_word_intervals(params)
         textgrid.interval_tier_from_array(
-            config_dict['tier names']['word'], words)
-    if config_dict['tiers']['phoneme']:
-        if config_dict['tier_names']['phoneme'] in textgrid:
+            configuration.tier_names.word, words)
+    if configuration.tiers['phoneme']:
+        if configuration.tier_names.phoneme in textgrid:
             _logger.critical(
                 "Tier %s already exists. Skipping file %s.",
-                config_dict['tier_names']['utterance'],
+                configuration.tier_names.utterance,
                 textgrid.filename)
             return
         segments = generate_segments(params, pronunciation_dict)
         textgrid.interval_tier_from_array(
-            config_dict['tier names']['phoneme'], segments)
-    if config_dict['tiers']['phone']:
-        if config_dict['tier_names']['phone'] in textgrid:
+            configuration.tier_names.phoneme, segments)
+    if configuration.tiers['phone']:
+        if configuration.tier_names.phone in textgrid:
             _logger.critical(
                 "Tier %s already exists. Skipping file %s.",
-                config_dict['tier_names']['utterance'],
+                configuration.tier_names.utterance,
                 textgrid.filename)
             return
-        elif config_dict['tier_names']['phoneme'] in textgrid:
+        elif configuration.tier_names.phoneme in textgrid:
             phone_tier = deepcopy(
-                textgrid[config_dict['tier names']['phoneme']])
-            textgrid[config_dict['tier names']['phone']] = phone_tier
+                textgrid[configuration.tier_names.phoneme])
+            textgrid[configuration.tier_names.phone] = phone_tier
         textgrid.interval_tier_from_array(
-            config_dict['tier names']['phone'], segments)
+            configuration.tier_names.phone, segments)
 
 
 def append_beginning_intervals(entry: dict, tier: Tier) -> None:
