@@ -38,14 +38,12 @@ from contextlib import closing
 from pathlib import Path
 from typing import Union
 
-from icecream import ic
-
 from strictyaml import (
     Map, Optional, Seq, Str,
     YAMLError, load
 )
 
-from .configuration import ExclusionList
+from .configuration_classes import ExclusionList
 
 _logger = logging.getLogger('cast.configuration')
 
@@ -83,7 +81,6 @@ def apply_exclusion_list(
             partials = [element for element in exclusion_list.parts_of_prompts
                         if element in prompt]
             if prompt in exclusion_list.prompts or partials:
-                ic('excluding due to prompt', filename)
                 _logger.info(
                     'Excluding %s. Prompt: %s matches exclusion list.',
                     filename, prompt)

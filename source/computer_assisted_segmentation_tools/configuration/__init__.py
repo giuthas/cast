@@ -37,3 +37,5 @@ from .configuration_classes import (
     ConfigurationFlags, ExclusionList, MainConfig, UtteranceGuess
 )
 from .configuration_parser import read_exclusion_list, read_pronunciation_dict
+from .exclusion import (
+    apply_exclusion_list, load_exclusion_list)

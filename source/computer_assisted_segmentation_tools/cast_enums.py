@@ -62,17 +62,6 @@ class ExtendedEnum(Enum):
         return list(map(lambda c: c.value, cls))
 
 
-class CommandStrings(ExtendedEnum):
-    """
-    Commands accepted by CAST as strings.
-    """
-    ADD = 'add'
-    CONCATENATE = 'concatenate'
-    EXTRACT = 'extract'
-    INITIALISE = 'init'
-    REMOVE_DOUBLE_WORD_BOUNDARIES = 'remove-double-word-boundaries'
-
-
 class TierLevels(ExtendedEnum):
     FILE = 'file'
     UTTERANCE = 'utterance'
@@ -92,47 +81,3 @@ class TierLevels(ExtendedEnum):
         """
         tier_list = cls.values()
         return tier_list.index(tier_name)
-
-
-def process_command(
-        command: CommandStrings, path: Path, config: MainConfig,
-        exclusion_list: ExclusionList | None = None
-) -> None:
-    """
-    Run a CAST command.
-
-    Parameters
-    ----------
-    command : CommandStrings
-        The command to be run.
-    path : Path
-        What to run the command on.
-    config : dict
-        Configuration to run the command with.
-    exclusion_list : Optional[ExclusionList]
-        Exclusion list to apply to the list of recordings to potentially
-        process.
-    """
-
-    if command is CommandStrings.INITIALISE:
-        initialise_dataset(path, config)
-    elif command is CommandStrings.ADD:
-        pronunciation_dict = None
-        add_tiers(path, config, pronunciation_dict=pronunciation_dict,
-                  exclusion_list=exclusion_list)
-    elif command is CommandStrings.CONCATENATE:
-        pronunciation_dict = None
-        concatenate_wavs(
-            path, config, pronunciation_dict)
-    elif command is CommandStrings.EXTRACT:
-        extract_textgrids(Path(path), Path(config['outputfile']))
-    elif command is CommandStrings.REMOVE_DOUBLE_WORD_BOUNDARIES:
-        if not config['output_dirname']:
-            print(
-                'Fatal: No output directory for new textgrids specified in '
-                'config file.')
-        remove_empty_intervals_from_textgrids(
-            Path(path), Path(config['output_dirname']))
-    else:
-        print(f"Did not recognise the command {command}. Exiting.")
-        sys.exit()

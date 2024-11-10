@@ -30,8 +30,6 @@
 #
 """Console script for computer_assisted_segmentation_tools."""
 
-from pathlib import Path
-
 import click
 
 from . import cast_click
