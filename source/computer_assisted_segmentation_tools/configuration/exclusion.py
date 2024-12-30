@@ -39,8 +39,7 @@ from pathlib import Path
 from typing import Union
 
 from strictyaml import (
-    Map, Optional, Seq, Str,
-    YAMLError, load
+    Map, Optional, Seq, Str, YAMLError, load
 )
 
 from .configuration_classes import ExclusionList
