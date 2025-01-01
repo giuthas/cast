@@ -87,7 +87,7 @@ def add_tiers(
         path: Path | str,
         configuration: MainConfig,
         pronunciation_dict: dict | None = None,
-        csv_meta_file: str | None = None,
+        csv_meta_file: Path | None = None,
 ) -> None:
     # TODO: check which tiers the textgrid has and which are requested. supply
     # the missing ones
@@ -100,44 +100,60 @@ def add_tiers(
 
     if path.is_file():
         if path.suffix == ".TextGrid":
+            # TODO: this has a problem in that add_tiers_to_textgrid does not
+            # have the logic to deal with a single TextGrid.
             textgrid = TextGrid(str(path))
-            add_tiers_to_textgrid(textgrid, configuration, pronunciation_dict)
+            meta_table = check_and_load_aaa_meta(
+                speaker_id, path, test)
+            meta_item = meta_table[0]
+            add_tiers_to_textgrid(
+                textgrid=textgrid,
+                params=meta_item,
+                configuration=configuration,
+                pronunciation_dict=pronunciation_dict)
             textgrid.write(str(path))
         else:
             print(f"Unknown file type: {path.suffix}. Exiting.")
             sys.exit()
     elif path.is_dir():
         datasource = configuration.datasource
-        table = {}
+        meta_table = {}
 
         match datasource:
             case Datasource.AAA:
-                table = check_and_load_aaa_meta(
+                meta_table = check_and_load_aaa_meta(
                     speaker_id, path, test)
             case Datasource.RASL:
-                table = check_and_load_rasl_meta(speaker_id, path, test)
+                meta_table = check_and_load_rasl_meta(speaker_id, path, test)
             case Datasource.CSV:
-                table = check_and_load_csv_meta(
-                    speaker_id, path, test, csv_meta_file)
+                # TODO: there isn't a way of providing this yet
+                if csv_meta_file:
+                    meta_table = check_and_load_csv_meta(
+                        speaker_id, path, test, csv_meta_file)
+                else:
+                    print(f".csv metafile missing. Exiting.")
+                    sys.exit()
             case _:
                 print(f"Unknown data source: {datasource}. Exiting.")
                 sys.exit()
 
-        apply_exclusion_list(table, configuration.exclusion_list)
+        apply_exclusion_list(meta_table, configuration.exclusion_list)
 
-        for item in table:
+        for item in meta_table:
             item['textgrid_path'] = path / (item['filename'] + ".TextGrid")
 
-        existing_textgrids = [item['textgrid_path'].is_file() for item in table]
+        existing_textgrids = [
+            item['textgrid_path'].is_file() for item in meta_table
+        ]
         if any(existing_textgrids):
             new_dir = create_autosave_directory(
-                table[0]['textgrid_path'], configuration)
+                meta_table[0]['textgrid_path'], configuration)
 
             print(f"copying to {new_dir}")
-            for item in table:
+            for item in meta_table:
                 shutil.copy2(item['textgrid_path'], new_dir)
 
-        for item in table:
+        for item in meta_table:
             if item['excluded']:
                 _logger.info(
                     "File %s excluded, skipping ", item['filename'])
@@ -151,7 +167,10 @@ def add_tiers(
                 textgrid = TextGrid()
 
             add_tiers_to_textgrid(
-                textgrid, item, configuration, pronunciation_dict)
+                textgrid=textgrid,
+                params=item,
+                configuration=configuration,
+                pronunciation_dict=pronunciation_dict)
             textgrid.write(item['textgrid_path'])
 
 
@@ -181,8 +200,8 @@ def add_tiers_to_textgrid(
         The Tiers will be added to this TextGrid
     params : dict
         parameters for this recording
-    config_dict : dict
-        Configuration dictionary
+    configuration : MainConfig
+        The Configuration for this dataset.
     pronunciation_dict : dict, optional
         Pronunciation dictionary -- not needed if only generating to the word
         level, by default None
