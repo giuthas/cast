@@ -87,4 +87,10 @@ run_cli.add_command(cast_click.concatenate)
 # noinspection PyTypeChecker
 run_cli.add_command(cast_click.extract)
 # noinspection PyTypeChecker
+run_cli.add_command(cast_click.delete)
+# noinspection PyTypeChecker
+run_cli.add_command(cast_click.init)
+# noinspection PyTypeChecker
 run_cli.add_command(cast_click.remove_double_boundaries)
+# noinspection PyTypeChecker
+run_cli.add_command(cast_click.scramble)

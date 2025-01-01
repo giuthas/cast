@@ -47,11 +47,13 @@ from .textgrid_functions import add_tiers
 @click.command()
 @click.argument(
     "directory",
-    type=click.Path(exists=True, dir_okay=True, file_okay=False),)
-@click.argument("config_file")
+    type=click.Path(exists=True, dir_okay=True, file_okay=False), )
+@click.argument(
+    "config_file",
+    type=click.Path(exists=True, dir_okay=False, file_okay=True), )
 def add(directory: str, config_file: str) -> None:
     """
-    Add the next Tier
+    Add the next active Tier.
 
     \b
     DIRECTORY contains the TextGrids to process.
@@ -65,7 +67,23 @@ def add(directory: str, config_file: str) -> None:
 
 
 @click.command()
+@click.argument(
+    "directory",
+    type=click.Path(exists=True, dir_okay=True, file_okay=False), )
+@click.argument("config_file")
+@click.option(
+    '-a', '--add',
+    type=click.Choice(['none', 'first', 'all'], case_sensitive=False))
 def concatenate():
+    """
+    Concatenate TextGrids.
+
+    \b
+    DIRECTORY contains the .TextGrid files to process.
+    CONFIG_FILE is the configuration .yaml file.
+
+    NOT IMPLEMENTED YET.
+    """
     pass
     # pronunciation_dict = None
     # concatenate_wavs(
@@ -73,13 +91,81 @@ def concatenate():
 
 
 @click.command()
+@click.argument(
+    "directory",
+    type=click.Path(exists=True, dir_okay=True, file_okay=False), )
+@click.argument("config_file")
+@click.argument("tier")
+def delete():
+    """
+    Delete a Tier from TextGrids.
+
+    \b
+    DIRECTORY contains the .wav files to process.
+    CONFIG_FILE is the configuration .yaml file.
+    TIER is the name of the tier to delete.
+
+    NOT IMPLEMENTED YET.
+    """
+    pass
+
+
+@click.command()
+@click.argument(
+    "textgrid",
+    type=click.Path(exists=True, dir_okay=False, file_okay=True), )
+@click.argument(
+    "directory",
+    type=click.Path(exists=True, dir_okay=True, file_okay=False), )
+@click.argument("config_file")
 def extract():
+    """
+    Extract individual TextGrids from a long one.
+
+    \b
+    TEXTGRID the long TextGrid.
+    DIRECTORY to extract the TextGrids to.
+    CONFIG_FILE is the configuration .yaml file.
+
+    NOT IMPLEMENTED YET.
+    """
     pass
     # extract_textgrids(Path(path), Path(config['outputfile']))
 
 
 @click.command()
+@click.argument(
+    "directory",
+    type=click.Path(exists=True, dir_okay=True, file_okay=False), )
+@click.argument("config_file")
+@click.option(
+    '-a', '--add',
+    type=click.Choice(['none', 'first', 'all'], case_sensitive=False))
+def init():
+    """
+    Create TextGrids for each .wav file. Optionally add Tiers.
+
+    \b
+    DIRECTORY contains the .wav files to process.
+    CONFIG_FILE is the configuration .yaml file.
+
+    NOT IMPLEMENTED YET.
+    """
+    # TODO: this is for creating empty TextGrids from wavs, or a list of begin
+    # and end values, or just end values.
+
+
+@click.command()
 def remove_double_boundaries():
+    """
+    Remove double boundaries between words.
+
+    \b
+    DIRECTORY contains the .wav files to process.
+    CONFIG_FILE is the configuration .yaml file.
+
+    NOT IMPLEMENTED YET.
+    """
     pass
     # if not config['output_dirname']:
     #     print(
@@ -87,3 +173,23 @@ def remove_double_boundaries():
     #         'config file.')
     # remove_empty_intervals_from_textgrids(
     #     Path(path), Path(config['output_dirname']))
+
+
+@click.command()
+@click.argument(
+    "directory",
+    type=click.Path(exists=True, dir_okay=True, file_okay=False), )
+@click.argument("config_file")
+@click.argument("tier")
+def scramble():
+    """
+    Scramble an existing Tier in TextGrids.
+
+    \b
+    DIRECTORY contains the .wav files to process.
+    CONFIG_FILE is the configuration .yaml file.
+    TIER is the name of the tier to scramble.
+
+    NOT IMPLEMENTED YET.
+    """
+    pass
