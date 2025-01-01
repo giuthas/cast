@@ -57,7 +57,6 @@ In addition:
   able to properly edit TextGrids because Praat doesn't have a very easy time with
   TextGrids and wavs living in separate directories.
 
-
 ### Removed
 
 - Lots of old code, so please don't rely on the API staying very stable before
@@ -65,12 +64,19 @@ In addition:
 
 ## [0.2.0]
 
+### Highlights
+
+- `add` and `delete` work.
+
 ### Added
 
 - `add` applies exclusion list before processing files.
 - `add` moves existing textgrids to a safe directory before creating new tiers
   and writing the new textgrids in the original directory.
-- `add` now does incremental adding of tiers.
+- `add` now does incremental adding of Tiers.
+- `delete` can be used to remove Tiers incrementally.
+- A number of other commands are present in the command line interface too, but
+  have not been implemented yet.
 
 ### Removed
 
