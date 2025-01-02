@@ -1,4 +1,4 @@
-# CAST Development guid
+# CAST Development guide
 
 For lack of actual content here (apart from the installing instructions below),
 look up the corresponding guide from SATKIT.
