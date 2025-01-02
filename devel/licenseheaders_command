@@ -1,3 +1,4 @@
-python -m licenseheaders -d source/ -t devel/gpl-v3_and_CC-BY-NC-SA.tmpl -y 2022-2024 -o "Pertti Palo" -n "Computer Assisted Segmentation Tools" -u https://github.com/giuthas-speech-research-tools/cast/  -x *.html -v -v -v
-python -m licenseheaders -d docs/ -t devel/gpl-v3_and_CC-BY-NC-SA.tmpl -y 2022-2024 -o "Pertti Palo" -n "Computer Assisted Segmentation Tools" -u https://github.com/giuthas-speech-research-tools/cast/  -x *.html -v -v -v
-python -m licenseheaders -d devel/ -t devel/gpl-v3_and_CC-BY-NC-SA.tmpl -y 2022-2024 -o "Pertti Palo" -n "Computer Assisted Segmentation Tools" -u https://github.com/giuthas-speech-research-tools/cast/  -x *.html -v -v -v
+python -m licenseheaders -d source/ -t devel/gpl-v3_and_CC-BY-NC-SA.tmpl -y 2022-2025 -o "Pertti Palo" -n "Computer Assisted Segmentation Tools" -u https://github.com/giuthas-speech-research-tools/cast/  -x *.html -v -v -v
+# Probably not going to use these anymore.
+# python -m licenseheaders -d docs/ -t devel/gpl-v3_and_CC-BY-NC-SA.tmpl -y 2022-2025 -o "Pertti Palo" -n "Computer Assisted Segmentation Tools" -u https://github.com/giuthas-speech-research-tools/cast/  -x *.html -v -v -v
+# python -m licenseheaders -d devel/ -t devel/gpl-v3_and_CC-BY-NC-SA.tmpl -y 2022-2025 -o "Pertti Palo" -n "Computer Assisted Segmentation Tools" -u https://github.com/giuthas-speech-research-tools/cast/  -x *.html -v -v -v
