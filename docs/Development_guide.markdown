@@ -11,7 +11,7 @@ corrections, please get in touch.
 
 - Get the repository: e.g. after forking on GitHub 
   `git clone [your repo url] [directory name you like]`
-- After which the run following in the repository root
+- After which run the following in the repository root
 - Get [pixi](https://pixi.sh/) `pip install pixi`
 - Get [hatch](https://hatch.pypa.io/) `pip install hatch`
 - Build the environments `pixi build` and _probably_ switch to the devel one
