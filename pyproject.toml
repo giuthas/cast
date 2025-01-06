@@ -10,9 +10,11 @@ readme = "README.md"
 requires-python = ">=3.10,<3.13"
 dependencies = [
     "click>=8.1.8",
+    "icecream>=2.1.3",
     "matplotlib>=3.10.0",
     "numpy>=2.2.1",
     "praat-textgrids>=1.4.0",
+    "pydantic>=2.10.4",
     "pylint>=3.3.3",
     "scipy>=1.15.0",
     "strictyaml>=1.7.3",
@@ -34,39 +36,38 @@ include = [
 [tool.hatch.build.targets.wheel]
 include = ["source/"]
 
-[tool.pixi.project]
-channels = ["default", "conda-forge"]
-platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
-
-[tool.pixi.tasks]
-
-[tool.pixi.dependencies]
-python = ">=3.12.3,<3.13"
-pydantic = ">=2.9.2,<3"
-pixi-pycharm = ">=0.0.7,<0.0.8"
-strictyaml = ">=1.7.3,<2"
-scipy = ">=1.14.1,<2"
-matplotlib = ">=3.9.2,<4"
-numpy = ">=2.1.2,<3"
-click = ">=8.1.7,<9"
-
-[tool.pixi.pypi-dependencies]
-computer-assisted-segmentation-tools = { path = ".", editable = true }
-praat-textgrids = ">=1.4.0, <2"
-
-[tool.pixi.feature.devel.dependencies]
-pylint = ">=2.7.2,<3.3"
-autopep8 = ">=1.3.2,<2.4"
-icecream = ">=2.1.3,<2.2"
-
-[tool.pixi.feature.devel.pypi-dependencies]
-licenseheaders = ">=0.8.8, <0.9"
-
-[tool.pixi.environments]
-devel = ["devel"]
+#[tool.pixi.project]
+#channels = ["default", "conda-forge"]
+#platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
+#
+#[tool.pixi.tasks]
+#
+#[tool.pixi.dependencies]
+#python = ">=3.12.3,<3.13"
+#pydantic = ">=2.9.2,<3"
+#pixi-pycharm = ">=0.0.7,<0.0.8"
+#strictyaml = ">=1.7.3,<2"
+#scipy = ">=1.14.1,<2"
+#matplotlib = ">=3.9.2,<4"
+#numpy = ">=2.1.2,<3"
+#click = ">=8.1.7,<9"
+#
+#[tool.pixi.pypi-dependencies]
+#computer-assisted-segmentation-tools = { path = ".", editable = true }
+#praat-textgrids = ">=1.4.0, <2"
+#
+#[tool.pixi.feature.devel.dependencies]
+#pylint = ">=2.7.2,<3.3"
+#autopep8 = ">=1.3.2,<2.4"
+#icecream = ">=2.1.3,<2.2"
+#
+#[tool.pixi.feature.devel.pypi-dependencies]
+#licenseheaders = ">=0.8.8, <0.9"
+#
+#[tool.pixi.environments]
+#devel = ["devel"]
 
 [dependency-groups]
 dev = [
-    "icecream>=2.1.3",
     "licenseheaders>=0.8.8",
 ]
