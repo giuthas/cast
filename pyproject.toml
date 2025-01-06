@@ -8,6 +8,15 @@ authors = [
 license = "GPL-3.0"
 readme = "README.md"
 requires-python = ">=3.10,<3.13"
+dependencies = [
+    "click>=8.1.8",
+    "matplotlib>=3.10.0",
+    "numpy>=2.2.1",
+    "praat-textgrids>=1.4.0",
+    "pylint>=3.3.3",
+    "scipy>=1.15.0",
+    "strictyaml>=1.7.3",
+]
 
 [project.scripts]
 cast = "source.computer_assisted_segmentation_tools:run_cli"
@@ -55,3 +64,9 @@ licenseheaders = ">=0.8.8, <0.9"
 
 [tool.pixi.environments]
 devel = ["devel"]
+
+[dependency-groups]
+dev = [
+    "icecream>=2.1.3",
+    "licenseheaders>=0.8.8",
+]
