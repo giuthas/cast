@@ -55,14 +55,20 @@ CAST is going to be re-organised a bit in the very near future (during
 
 ### New ways while waiting for upload to pypi
 
-- Ask Pertti for the wheel files and install from them or
-- Do a [developer install](docs/Development_guide.markdown#install-cast-in-development-mode-)
+- Follow the instructions in the [docs](docs/Install_cast.markdown)
+  (recommended), or
+- You could also ask Pertti for the wheel files and install from them, or
+- Do a [developer
+  install](docs/Development_guide.markdown#install-cast-in-development-mode-)
+  although this will not be easy, or
+- Use the old way described below.
 
 ### Old way
 
 Following steps should lead to a working installation. Please, let me know if
-anything doesn't work. I have only very superficially tested installation on
-Linux and not at all on any other systems.
+anything doesn't work and especially if you have a fix/update for this method. I
+have only very superficially tested installation on Linux and not at all on any
+other systems.
 
 - Get Conda and Mamba.
 - Either:
