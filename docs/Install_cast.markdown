@@ -18,6 +18,9 @@ There are other more programming oriented ways of running a package like CAST
 with uv, but the following assumes the aim is to have a ordinary command line
 command installed for ease of use.
 
+Also of note is that the current way is just a hack as it is. See
+[below]((#when-pypi-is-available)).
+
 1. Get [uv](https://docs.astral.sh/uv/getting-started/installation/)
     - If you have no specific preference for install method, use the first system
       appropriate one from the linked page.
@@ -39,7 +42,13 @@ yourself), then run `uv tool upgrade computer-assisted-segmentation-tools
 versionnumber or dependencies didn't update -- a usual case for needing this is
 making some changes in the code and wanting to test them out.
 
+### When PyPi is available
+
 Once CAST is on PyPi, you can skip from step 1 to just running `uv tool install
 computer-assisted-segmentation-tools`.  Upgrading to latest PyPi version will
 also simplify to just running `uv tool upgrade
 computer-assisted-segmentation-tools`.
+
+If you do a PyPi install and want to test local code do it with `uv run cast`.
+If you only require an installation to test local code and want to use the short
+`cast` instead of `uv run cast`, use the [above](#using-uv) instructions.
