@@ -26,8 +26,8 @@ Also of note is that the current way is just a hack as it is. See
       appropriate one from the linked page.
 2. Get the CAST sources. Here are alternative ways of doing that:
    - Download and unpack them from
-      [github](https://github.com/giuthas-speech-research-tools/cast/releases), or
-   . clone the repository with ´git clone
+      [GitHub](https://github.com/giuthas-speech-research-tools/cast/releases), or
+   - clone the repository with ´git clone
       https://github.com/giuthas-speech-research-tools/cast/´, 
    - or clone your own fork if you have forked CAST.
 3. In the (unpacked) source directory run 'uv tool install .' This will install two
