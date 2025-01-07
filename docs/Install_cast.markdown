@@ -19,7 +19,7 @@ with uv, but the following assumes the aim is to have a ordinary command line
 command installed for ease of use.
 
 Also of note is that the current way is just a hack as it is. See
-[below]((#when-pypi-is-available)).
+[below](#when-pypi-is-available).
 
 1. Get [uv](https://docs.astral.sh/uv/getting-started/installation/)
     - If you have no specific preference for install method, use the first system
@@ -51,4 +51,5 @@ computer-assisted-segmentation-tools`.
 
 If you do a PyPi install and want to test local code do it with `uv run cast`.
 If you only require an installation to test local code and want to use the short
-`cast` instead of `uv run cast`, use the [above](#using-uv) instructions.
+`cast` instead of `uv run cast`, use the [above](Install_cast.markdown#using-uv)
+instructions.
