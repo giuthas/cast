@@ -30,7 +30,7 @@ Also of note is that the current way is just a hack as it is. See
    - clone the repository with ´git clone
       https://github.com/giuthas-speech-research-tools/cast/´, 
    - or clone your own fork if you have forked CAST.
-3. In the (unpacked) source directory run 'uv tool install .' This will install two
+3. In the (unpacked) source directory run `uv tool install .` This will install two
    command line commands: `cast` and `computer-assisted-segmentation-tools`. The
    name of the installed package is computer-assisted-segmentation-tools.
 4. See `cast --help` for help and `cast [command] --help` for more specific
