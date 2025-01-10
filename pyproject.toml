@@ -29,12 +29,10 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.sdist]
-include = [
-    "/source",
-]
+packages = ["src/cast"]
 
 [tool.hatch.build.targets.wheel]
-include = ["source/"]
+packages = ["src/cast"]
 
 #[tool.pixi.project]
 #channels = ["default", "conda-forge"]
