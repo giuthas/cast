@@ -21,8 +21,8 @@ dependencies = [
 ]
 
 [project.scripts]
-cast = "source.computer_assisted_segmentation_tools:run_cli"
-computer_assisted_segmentation_tools = "source.computer_assisted_segmentation_tools:run_cli"
+cast = "computer_assisted_segmentation_tools:run_cli"
+computer_assisted_segmentation_tools = "computer_assisted_segmentation_tools:run_cli"
 
 [build-system]
 requires = ["hatchling"]
